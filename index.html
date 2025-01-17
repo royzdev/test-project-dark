@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>YeatClient » Главная</title>
+  <link rel="icon" type="image/x-icon" href="/img/ico_logo.png">
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="vendor/aos/aos.css" rel="stylesheet">
+  <link href="vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src='https://www.google.com/recaptcha/api.js' async defer ></script>
+  <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+  <link href="css/auth.css" rel="stylesheet">
+  <link href="css/main.css" rel="stylesheet">
+   <meta charset="UTF-8">
+
+
+</head>
+
+
+<body class="index-page">
+
+<header><div>
+
+<header id="header" class="header  fixed-top ">
+    <div class="container-xl d-flex align-items-center">
+
+        <a href="/" class="logo d-flex align-items-center me-auto">
+            <img src="img/logo.png" alt="">
+            <h1>Yeat Client</h1>
+        </a>
+
+        <nav id="navmenu" class="navmenu" >
+            <ul>
+                <li><a href="/">Главная</a></li>
+
+
+                <li></li>
+
+
+                <li><a href="#footer">Документы</a></li>
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav>
+
+
+
+        
+
+
+
+        <a class="btn-getstarted flex-md-shrink-0" style="margin-left: 30px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-backdrop="static" data-bs-keyboard="false">Войти</a>
+    </div>
+</header>
+</div></header>
+
+<header><div>
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog customContainer" style="margin-top: -280px;">
+      <div class="modal-content">
+         <div id="loginFormContainer" class="form">
+          <div style="text-align: center;">
+            <img src="img/logo.png" width="80px" alt="logo">
+            <div class="titleText">Войти в аккаунт</div>
+          </div>
+          <form id="authForm" >
+            <div class="field input-field">
+              <input name="login" type="text" placeholder="Введите e-mail или login" required>
+            </div>
+            <div class="field input-field">
+              <input type="password" name="password" placeholder="Введите пароль" required>
+            </div>
+
+            <a href="/lostpassword"  class="px-1" style="font-size: 14px;">Забыли пароль?</a>
+
+            <div id="result" style="color: #e81e2d; text-shadow: 0 0 12px rgba(255, 0, 0, 0.9); text-align: center; font-size: 15px;" class="mt-2"></div>
+            <div style="display: flex; justify-content: center;">
+              <a href="#" id="switchToRegister" style="margin-top: 34px;">
+                <span class="bi bi-person"></span> Зарегистрировать аккаунт
+              </a>
+              <button class="btn btn-getstarted mt-4" style="margin-left: 30px;">
+                Войти <span class="bi bi-arrow-right-circle" style="margin-left: 5px;"></span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+         <div id="registerFormContainer" class="form" style="display: none;">
+          <div style="text-align: center;">
+            <img src="img/logo.png" width="80px" alt="logo">
+            <div class="titleText">Регистрация аккаунта</div>
+          </div>
+          <form id="registerForm">
+            <div class="field input-field">
+              <input type="email" id="email" placeholder="Введите e-mail" name="email" required>
+            </div>
+            <div class="field input-field">
+              <input type="text" name="login" placeholder="Введите login" required>
+            </div>
+            <div class="field input-field">
+              <input type="password" name="pw_hash" placeholder="Введите пароль" required>
+            </div>
+            <div id="registerResult" style="color: red; text-shadow: 0 0 12px rgba(255, 0, 0, 0.9); text-align: center; font-size: 15px;" class="mt-2"></div>
+
+
+            <style>
+              .text-xs-center {
+                text-align: center;
+              }
+
+
+            </style>
+
+
+            <div class="text-xs-center mt-4">
+              <div class="h-captcha" data-sitekey="9402af34-d4ba-4336-9dda-6b824cf849a0"></div>
+            </div>
+
+            <div style="display: flex; justify-content: center;">
+              <a href="#" id="switchToLogin" style="margin-top: 34px;">
+                <span class="bi bi-arrow-left"></span> Войти
+              </a>
+              <button class="btn btn-getstarted mt-4" style="margin-left: 30px;">
+                Зарегистрироваться <span class="bi bi-check-circle" style="margin-left: 5px;"></span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script type="text/javascript">
+
+    $(document).ready(function(){
+      $("#registerForm").submit(function(event){
+        event.preventDefault();
+        $.ajax({
+          type: "POST",
+          url: "api/register",
+          data: $(this).serialize(),
+          success: function(response){
+            if (response !== "OK") {
+              $("#registerResult").html(response);
+            }else {
+              window.location.href = "/cabinet";
+            }
+          }
+        });
+      });
+    });
+
+    $(document).ready(function() {
+      const loginFormContainer = $('#loginFormContainer');
+      const registerFormContainer = $('#registerFormContainer');
+
+      // Переключение на форму регистрации
+      $('#switchToRegister').on('click', function (event) {
+        event.preventDefault();
+        loginFormContainer.hide();
+        registerFormContainer.show();
+      });
+
+      // Переключение на форму входа
+      $('#switchToLogin').on('click', function (event) {
+        event.preventDefault();
+        registerFormContainer.hide();
+        loginFormContainer.show();
+      });
+
+      // Обработка формы входа
+      $('#authForm').on('submit', function (event) {
+        event.preventDefault();
+        $.ajax({
+          type: 'POST',
+          url: 'api/login',
+          data: $(this).serialize(),
+          success: function (response) {
+            if (response !== "OK") {
+              $('#result').html(response);
+            } else {
+              $('#result').html('<div style="color: #28a745; text-shadow: 0 0 16px rgba(40, 167, 69, 0.9); text-align: center; font-size: 15px;" class="mt-2">Успешная авторизация!</div>');
+              setTimeout(() => {
+                window.location.href = "/cabinet";
+              }, 1000);
+            }
+          }
+        });
+      });
+
+      // Сброс формы при закрытии модального окна
+      $('#loginModal').on('hide.bs.modal', function () {
+        loginFormContainer.show();
+        registerFormContainer.hide();
+      });
+    });
+  </script>
+</div></header>
+
+
+<main class="main">
+
+  <section class="hero">
+
+
+    <div class="container-xl mt-2">
+      <div class="row flex-lg-row-reverse align-items-center" data-aos="fade-right">
+        <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
+          <h3 class="display-4 fw-bold lh-1 mb-3" style="color: #e81e2d; ">YEAT CLIENT</h3>
+          <p class="lead" style="font-size: 18px; width: 90%;">Наслаждайтесь каждой минутой игрового процесса с нашим товаром, созданным для вашего комфорта и удовольствия. Он оптимизирован, чтобы сделать Minecraft еще увлекательнее и удобнее, позволяя вам полностью погрузиться в игру без лишних забот.</p>
+
+          <div class="d-flex flex-column flex-md-row" data-aos="fade-up" data-aos-delay="200">
+            <a href="/cabinet" class="btn-get-started">Купить<i class="bi bi-arrow-right"></i></a>
+            <a  href="/#cards"  class="btn btn-other d-flex align-items-center justify-content-center ms-0 ms-md-4 mt-4 mt-md-0"><span>Подробнее</span></a>
+          </div>
+
+        </div>
+
+        <div class="col-10 col-sm-8 col-lg-6 d-none d-md-block">
+          <img src="img/logo.png" class="d-block mx-lg-auto img-fluid translateAnimation" loading="lazy" width="420">
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <section id="alt-features" class="alt-features section">
+
+    <div class="container-xl text-center" data-aos="fade-up">
+
+      <h1 class="mb-4 display-6 text-white fw-bold">Почему стоит выбрать нас?</h1>
+      <p class="mb-5 " style="color: #cdcdcd;">Предлагаем почитать ниже наши преимущества</p>
+
+      <div class="row gy-5">
+
+          <div class="row align-self-center gy-5 text-center">
+
+            <div class="col-md-6 icon-box">
+              <div>
+                <i class="fa fa-eye"></i>
+                 <h4>Красивый внешний вид</h4>
+                <p>В нашем клиенте присутствует большое количество визуальных функций, которые сделают вашу игру более красочной. А так же вы можете настроить оформление клиента под себя, сделав его по настоящему красивым.</p>
+              </div>
+            </div>
+
+            <div class="col-md-6 icon-box">
+
+               <div>
+                 <i class="fa fa-sliders"></i>
+
+                 <h4>Настраиваемость</h4>
+                <p>В нашем клиенте вы можете настроить практически любую функцию под себя, а так же использовать конфигурации других пользователей. Благодаря этому вы сможете использовать наш клиент на максимуме его возможностей.</p>
+              </div>
+            </div>
+
+
+
+            <div class="col-md-6 icon-box">
+              <div>
+                <i class="fa fa-flash"></i>
+                <h4>Оптимизация</h4>
+                <p>Мы постоянно улучшаем оптимизацию нашего клиента и самой игры. Благодаря этому вы сможете запустить наш клиент даже на слабых компьютерах.
+                </p></div>
+            </div>
+
+
+            <div class="col-md-6 icon-box">
+              <div>
+                <i class="fa fa-rotate-right"></i>
+                <h4>Частые обновления
+                </h4>
+                <p>Мы регулярно обновляем функционал в нашем клиенте, добавляя новые функции, а так же совершенствуя уже существующие. Благодаря этому наш клиент имеет преимущества под все существующие сервера.</p></div>
+            </div>
+
+          </div>
+
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <section id="cards" class="container-xl" data-aos="fade-up">
+
+    <h1 class="mb-4 display-6 text-white fw-bold">Товары</h1>
+    <p class="mb-5 " style="color: #cdcdcd;">Список самых популярных товаров.</p>
+
+
+    <div class="row" style="text-align: left;" data-aos="fade-left">
+
+
+      <div class="col-md-4 mb-3">
+        <div>
+          <div class="card-body text-white">
+            <img src="img/plus.png" width="185px">
+            <div class="card-content">
+              <h5 class="card-title">Yeat+ (Plus)</h5>
+              <p class="card-text" style="width: 100%; font-size: 13px; color: gray;">С этим дополнением вам будут доступен абсолютно весь функционал.</p>
+              <a href="/checkout?id=1" class="btn btn-getstarted">Приобрести</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-3">
+        <div >
+          <div class="card-body text-white">
+            <img src="img/lifetime.png" width="185px">
+            <div class="card-content">
+              <h5 class="card-title">Yeat навсегда</h5>
+              <p class="card-text" style="width: 100%; font-size: 13px; color: gray;">Вы получаете клиент абсолютно навсегда, так же все
+                последующие обновления.</p>
+              <a href="/checkout?id=2" class="btn btn-getstarted">Приобрести</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-md-4 mb-3">
+        <div>
+          <div class="card-body text-white">
+            <img src="img/1month.png" width="185px">
+            <div class="card-content">
+              <h5 class="card-title">Yeat месяц</h5>
+              <p class="card-text" style="width: 100%; font-size: 13px; color: gray">Вы получаете клиент всего на 30 дней, обновления на этот период.</p>
+              <a href="/checkout?id=3" class="btn btn-getstarted">Приобрести</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <section id="faq" class="faq section container-xl" data-aos="fade-up">
+
+
+    <div class="row gy-5 gy-lg-0">
+      <div class="col-12 col-lg-6">
+        <div class="d-flex flex-column flex-md-row"  >
+          <h2 class="h1 mb-3">FAQ - Ответы на вопросы.</h2>
+        </div>
+        <p class="w-75" style="color: gray;">Не бойтесь задавать глупые вопросы!  Мы уже собрали ответы на все самые популярные (и не очень) вопросы о нашем сайте, продукте. Мы хотим сделать все как можно лучше, а это возможно только благодоря вам.</p>
+        <p class="w-75" style="color: gray;">Напишите нам в любой социальной сети:</p>
+        <div class="social-links d-flex">
+          <a href="https://www.youtube.com/@null" target="_blank"><i class="bi bi-youtube"></i></a>
+          <a href="https://t.me/null" target="_blank"><i class="bi bi-telegram"></i></a>
+          <a href="https://dsc.gg/null" target="_blank"><i class="bi bi-discord"></i></a>
+        </div>
+      </div>
+      <div class="col-12 col-lg-6" >
+        <div class="row justify-content-xl-end">
+          <div class="col-12 col-xl-11">
+            <div class="faq-container">
+
+              <div class="faq-item">
+                <h3>Я оплатил подписку. Что делать дальше?</h3>
+                <div class="faq-content">
+                  <p>Перейдите в раздел «Личный кабинет», загрузите и установите наш лаунчер. После установки войдите в систему и наслаждайтесь игрой.</p>
+                </div>
+                <i class="faq-toggle bi bi-chevron-right"></i>
+              </div>
+
+              <div class="faq-item">
+                <h3>Чем наш клиент превосходит другие?</h3>
+                <div class="faq-content">
+                  <p>Наш клиент предлагает расширенные возможности для PVE, позволяющие зарабатывать значительные суммы внутриигровой валюты.</p>
+                </div>
+                <i class="faq-toggle bi bi-chevron-right"></i>
+              </div>
+
+
+
+              <div class="faq-item">
+                <h3>Не запускается клиент?</h3>
+                <div class="faq-content">
+                  <p>Если у вас возникли проблемы с клиентом, вы можете обратиться в нашу службу поддержки. Мы ответим вам в кратчайшие сроки.</p>
+                </div>
+                <i class="faq-toggle bi bi-chevron-right"></i>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+
+  <div class="container-xl some_good mb-5 text-center mt-5" data-aos="fade-up">
+
+    <h1 class="mb-4 display-6 text-white fw-bold">Видео наших пользователей</h1>
+    <p class="mb-5 " style="color: #cdcdcd;">Здесь вы увидете игру с нашим клиентом.</p>
+    <hr class="w-50 mx-auto mb-5 mb-xl-9 border-dark-subtle">
+
+       <div class="media-box">
+         <div class="embed-responsive embed-responsive-16by9 rounded-5 video-container" data-src="https://www.youtube.com/embed/T0sN5Znales">
+          </div>
+         <div class="embed-responsive embed-responsive-16by9 rounded-5 video-container" data-src="https://www.youtube.com/embed/hKi8uOF0guY">
+          </div>
+         <div class="embed-responsive embed-responsive-16by9 rounded-5 video-container" data-src="https://www.youtube.com/embed/oJ7BlFndkc8">
+          </div>
+         <div class="embed-responsive embed-responsive-16by9 rounded-5 video-container" data-src="https://www.youtube.com/embed/_3OOKdzBr8k">
+          </div>
+      </div>
+    <br> </br>
+  </div>
+
+
+
+
+</main>
+
+<footer><div>
+
+<footer id="footer" class="footer">
+    <div class="container footer-top">
+        <div class="row gy-4">
+            <div class="col-lg-4 col-md-6 footer-about" style="margin-top: 0px;">
+                <a href="/" class="d-flex align-items-center">
+
+                    <img src="img/logo.png" style="margin-left: -10px;" width="50px;">
+
+                    <span>Yeat</span>
+                </a>
+                <div class="footer-contact">
+                    <p>Наш продукт не связан с MojangAB</p>
+                    <p>все средства идут на развитие проекта.</p>
+                    <p class="mt-3"><strong>Email: </strong><span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="91f5f4fde5f0d1f5f4fde5f0f2fdf8f4ffe5bff7e4ff">[email&#160;protected]</a></span></p>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-3 footer-links">
+                <h4>Навигация</h4>
+                <ul>
+                    <li><i class="bi bi-dot"></i> <a href="/">Главная</a></li>
+                     <li><i class="bi bi-dot"></i> <a href="/#faq">Товары</a></li>
+                     <li><i class="bi bi-dot"></i> <a href="/#alt-features">Наши качества</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-2 col-md-3 footer-links">
+                <h4>Документы</h4>
+                <ul>
+                    <li><i class="bi bi-dot"></i> <a href="/eula">Пользовательское соглашение</a></li>
+                    <li><i class="bi bi-dot"></i> <a href="/privacy_policy">Обработка данных</a></li>
+                  </ul>
+            </div>
+
+            <div class="col-lg-4 col-md-12">
+                <h4>Наши социальные сети</h4>
+                <p>Здесь мы собрали все наши официальные социальные сети, мы будем очень рады вашей подписке.</p>
+                <div class="social-links d-flex">
+                    <a href="https://www.youtube.com/@null" target="_blank"><i class="bi bi-youtube"></i></a>
+                    <a href="https://t.me/null" target="_blank"><i class="bi bi-telegram"></i></a>
+                    <a href="https://dsc.gg/null" target="_blank"><i class="bi bi-discord"></i></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="container copyright text-center mt-4">
+        <p>© <span>Copyright</span> <img src="img/logo.png" width="40px" style="margin: -5px"> <strong>Yeat</strong ></p>
+    </div>
+
+</footer>
+</div></footer>
+
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slider img');
+
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.style.display = i === index ? 'block' : 'none';
+    });
+  }
+
+  function nextSlide() {
+    currentSlide = (currentSlide + 1) % slides.length;
+    showSlide(currentSlide);
+  }
+
+  setInterval(nextSlide, 3000); // Меняем изображение каждые 3 секунды
+  showSlide(currentSlide); // Показываем первый слайд
+
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const videoContainers = document.querySelectorAll('.video-container');
+
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const container = entry.target;
+          const iframe = document.createElement('iframe');
+
+          iframe.src = container.getAttribute('data-src');
+          iframe.loading = "lazy";
+          iframe.frameBorder = "0";
+          iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+          iframe.allowFullscreen = true;
+          container.appendChild(iframe);
+          observer.unobserve(container);
+        }
+      });
+    });
+
+    videoContainers.forEach(container => {
+      observer.observe(container);
+    });
+
+  });
+</script>
+
+ <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="vendor/php-email-form/validate.js"></script>
+<script src="vendor/aos/aos.js"></script>
+<script src="vendor/glightbox/js/glightbox.min.js"></script>
+<script src="vendor/purecounter/purecounter_vanilla.js"></script>
+<script src="vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+<script src="vendor/isotope-layout/isotope.pkgd.min.js"></script>
+<script src="vendor/swiper/swiper-bundle.min.js"></script>
+
+<script src="jss/main.js"></script>
+
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"rayId":"90377ec4f9fe0857","version":"2025.1.0","r":1,"token":"bfdd1ae993ac457aa1de365010c3c278","serverTiming":{"name":{"cfExtPri":true,"cfL4":true,"cfSpeedBrain":true,"cfCacheStatus":true}}}' crossorigin="anonymous"></script>
+</body>
+
+</html>
