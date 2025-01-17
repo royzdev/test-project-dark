@@ -1,1 +1,0 @@
-# CopyRight 2025
